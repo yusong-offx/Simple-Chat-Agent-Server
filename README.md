@@ -1,4 +1,4 @@
-# Simple Agent Server
+# Simple Chat Agent Server
 
 LangGraph 기반 멀티 에이전트(LangChain 도구 포함)를 FastAPI로 스트리밍 서빙하는 최소 예제입니다. 라우터가 입력 의도를 판별하여 일반 대화/툴 호출(`chat_agent`) 또는 뉴스 수집→요약 파이프라인(`news_agent → summary_agent`)으로 보냅니다. SSE(EventSource)로 모델/툴 토큰을 실시간 전송합니다.
 
