@@ -59,7 +59,7 @@ class SummaryAgent:
         )
 
     async def run(self, state: AgentState):
-        if state.news is None:
+        if not state.news or state.news is None:
             return {"messages": [AIMessage("요약할 뉴스가 없습니다.")]}
         messages  = HumanMessage("\n".join([str(item) for item in state.news]))
         assistant = await self.__model.ainvoke({"messages": [messages]})

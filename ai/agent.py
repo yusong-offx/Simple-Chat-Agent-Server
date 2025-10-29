@@ -5,7 +5,6 @@ from ai.graph import ai_app
 from ai.state import AgentState
 from pydantic import BaseModel
 
-
 class StreamingMessage(BaseModel):
     event: str
     data: str

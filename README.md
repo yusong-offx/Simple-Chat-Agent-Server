@@ -155,7 +155,8 @@ graph TD;
   - `america` ([The New York Times](https://www.nytimes.com/rss)): `HomePage`, `World`, `US`, `Politics`, `Technology` 등
   - `korea` ([The Korea Times](https://www.koreatimes.co.kr/rss)): `AllNews`, `SouthKorea`, `Economy`, `Business`, `Entertainment` 등
 - RSS 수집기: `ai/news/tools/rss_feed.py` — httpx 비동기 병렬, RSS/Atom 파싱, 간단 중복제거.
-- 요약: `ai/summary/agent.py` — 리스트 입력을 한국어로 핵심 요약.
+- 요약: `ai/summary/agent.py` — 리스트 입력을 한국어로 핵심 요약.  
+**해당 rss에 feed가 없으면 `요약할 뉴스가 없습니다`로 표시됩니다.
 
 ---
 

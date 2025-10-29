@@ -1,7 +1,7 @@
 from uuid import UUID
 from typing import Any
 
-from fastapi import FastAPI, Request, Path
+from fastapi import FastAPI, Request, Path, Response
 from pydantic import BaseModel, Field, ConfigDict
 
 from sse_starlette.sse import EventSourceResponse
@@ -33,12 +33,10 @@ async def health() -> dict[str, str]:
     """Simple liveness endpoint used by local/dev environments."""
     return {"status": "ok"}
 
-
 @app.get(
     "/{session_id}",
     tags=["Sessions"],
     summary="Get session history",
-    response_model=list[dict[str, Any]],
     responses={
         200: {
             "description": "List of state history snapshots for the session.",
@@ -54,6 +52,9 @@ async def health() -> dict[str, str]:
                     }
                 }
             },
+        },
+        204: {
+            "description" : "no history"
         }
     },
 )
@@ -61,7 +62,13 @@ async def get_chat_history(
     session_id: UUID = Path(..., description="UUID v4 session identifier")
 ):
     """Return session-scoped state history. Ephemeral (process memory)."""
-    return [history async for history in get_session_history(session_id)]
+
+    # return [history async for history in get_chat_history(session_id)]
+    history = await anext(get_session_history(session_id), None)
+    if history is None:
+        return Response(status_code=204)
+    return history.values['messages']
+    
 
 
 class ChatRequest(BaseModel):
