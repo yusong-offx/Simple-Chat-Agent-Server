@@ -1,0 +1,24 @@
+[project]
+name = "simple-agent-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "asyncpg>=0.30.0",
+    "fastapi>=0.119.1",
+    "google-api-python-client>=2.185.0",
+    "httpx>=0.28.1",
+    "ipaddress>=1.0.23",
+    "langchain>=1.0.2",
+    "langchain-google-community>=3.0.0",
+    "langchain-google-genai>=3.0.0",
+    "langgraph>=1.0.1",
+    "pydantic>=2.7",
+    "pydantic-extra-types>=2.10.6",
+    "python-dotenv>=1.0.1",
+    "sse-starlette>=2.2.1",
+    "sqlalchemy[asyncio]>=2.0.44",
+    "uuid7>=0.1.0",
+    "uvicorn>=0.38.0",
+]
