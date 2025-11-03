@@ -63,6 +63,37 @@ uvicorn main:app --reload
 
 ---
 
+## 개발 워크플로우(품질 도구)
+
+- 포맷/린트: Ruff + Black
+- 타입체크: MyPy
+- 테스트: PyTest
+
+설치 및 사용 예시
+
+```bash
+# 개발 의존성 설치
+uv sync --group dev  # uv 사용 시
+
+# 또는 pip
+pip install -e .[dev]
+
+# 린트/포맷
+ruff check --fix . && ruff format . && black .
+
+# 타입체크
+mypy .
+
+# 테스트
+pytest -q
+
+# pre-commit(선택)
+pre-commit install
+pre-commit run --all-files
+```
+
+---
+
 ## API
 
 ### 세션 단위
@@ -208,3 +239,12 @@ uv.lock               # uv 잠금파일
 - Router few-shot 보강 및 결정적 파라미터 조정
 - 더 강력한 서치엔진 옵션(Tavily 등) 플러그형 추가
 - 가드레일(입력 검증, 민감정보 차단, 응답 필터링)
+
+---
+
+## Docker (옵션)
+
+```bash
+docker build -t simple-agent-server .
+docker run --env-file .env -p 8000:8000 simple-agent-server
+```

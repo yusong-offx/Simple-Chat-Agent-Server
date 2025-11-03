@@ -19,7 +19,7 @@ class IpInfoResponse(BaseModel):
 
 
 @tool("ip_info")
-async def get_ip_info(request_ip: str) -> IpInfoResponse:
+async def get_ip_info(request_ip: str) -> str:
     """Look up geolocation and local time for an IP address.
 
     Queries ip-api.com to obtain latitude, longitude, and IANA timezone for the

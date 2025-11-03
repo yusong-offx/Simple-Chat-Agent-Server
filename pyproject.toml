@@ -22,3 +22,38 @@ dependencies = [
     "uuid7>=0.1.0",
     "uvicorn>=0.38.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.6.9",
+    "black>=24.10.0",
+    "mypy>=1.11.2",
+    "types-requests>=2.32.0.20241016",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = [".venv", "uv.lock"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+warn_unreachable = true
+warn_unused_ignores = true
+exclude = [".venv", "uv.lock"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-q"
+testpaths = ["tests"]

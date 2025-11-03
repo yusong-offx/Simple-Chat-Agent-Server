@@ -1,7 +1,10 @@
+import logging
+import os
 from uuid import UUID
 from typing import Any
 
 from fastapi import FastAPI, Request, Path, Response
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, ConfigDict
 
 from sse_starlette.sse import EventSourceResponse
@@ -27,6 +30,21 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
+# Dev-friendly CORS (adjust for production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Basic logging
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+)
+
 
 @app.get("/health", tags=["Health"], summary="Liveness probe", response_model=dict[str, str])
 async def health() -> dict[str, str]:
@@ -46,28 +64,29 @@ async def health() -> dict[str, str]:
                         "empty": {"value": []},
                         "sample": {
                             "value": [
-                                {"ts": "2025-10-29T12:00:00Z", "state": {"route": "chat_agent"}}
+                                {"ts": "2025-10-29T12:00:00Z", "values": {"route": "chat_agent"}}
                             ]
                         },
                     }
                 }
             },
         },
-        204: {
-            "description" : "no history"
-        }
+        204: {"description": "no history"},
     },
 )
 async def get_chat_history(
     session_id: UUID = Path(..., description="UUID v4 session identifier")
 ):
-    """Return session-scoped state history. Ephemeral (process memory)."""
+    """Return full session-scoped state history. Ephemeral (process memory)."""
 
-    # return [history async for history in get_chat_history(session_id)]
-    history = await anext(get_session_history(session_id), None)
-    if history is None:
+    hist_iter = get_session_history(str(session_id))
+    items = [
+        {"ts": h.created_at.isoformat() if getattr(h, "created_at", None) else None, "values": h.values}
+        async for h in hist_iter
+    ]
+    if not items:
         return Response(status_code=204)
-    return history.values['messages']
+    return items
     
 
 
@@ -110,4 +129,4 @@ async def talk_to_llm(
     request: Request = ...,  # reserved for future middleware usage
 ):
     """Starts an SSE stream that emits model tokens and tool events for the session."""
-    return EventSourceResponse(ai_model(session_id, user_message.message))
+    return EventSourceResponse(ai_model(str(session_id), user_message.message))
